@@ -1,5 +1,5 @@
 # mc-processor 
-MC simulation for trigger electronics evaluation using FPGA.
+MC processor for trigger electronics evaluation using FPGA.
 
 poisson-generator.vhd: Simulates poisson process.
 pulse-delay.vhd: High resolution pulse delay.
