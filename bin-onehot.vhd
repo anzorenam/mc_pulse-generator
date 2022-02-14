@@ -2,19 +2,22 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-entity bin_oneh is
+entity bin_onehot is
 generic(bin_width: natural:= 10;
 onehot_width: natural:= 1024);
-port(clk,rst,hab_reg: std_logic;
-binary: in unsigned(bin_width-1 downto 0);
+port(gclk: std_logic;
+ctrl_rand: std_logic_vector (2 downto 0);
+binary: in unsigned (bin_width-1 downto 0);
 onehot: out std_logic_vector (onehot_width-1 downto 0));
 end entity;
-architecture x of bin_oneh is
+
+architecture x of bin_onehot is
 signal decoder: std_logic_vector (onehot_width-1 downto 0);
+
 begin
 
 process(binary)
-variable code: std_logic_vector(onehot_width-1 downto 0);
+variable code: std_logic_vector (onehot_width-1 downto 0);
 begin
   code:=(others=>'0');
   for j in 0 to onehot_width-1 loop
@@ -27,15 +30,13 @@ begin
   decoder<=code;
 end process;
 
-process(clk,rst)
+process(gclk)
 begin
-  if rst='1' then
-    onehot<=(others=>'0');
-  else
-    if rising_edge(clk) then
-      if hab_reg='1' then
-        onehot<=decoder;
-      end if;
+  if rising_edge(gclk) then
+    if ctrl_rand="100" then
+      onehot<=decoder;
+    elsif ctrl_rand="001" or ctrl_rand="101" then
+      onehot<=(others=>'0');
     end if;
   end if;
 end process;
