@@ -27,7 +27,7 @@ begin
     end loop;
   else
     if rising_edge(p0) then
-      sampling_reg0(0)<='1';
+      sampling_reg0(0)<=make_delay;
       for j in 1 to onehot_width/8-1 loop
         sampling_reg0(j)<=sampling_reg7(j-1);
       end loop;
