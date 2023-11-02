@@ -8,7 +8,7 @@ import matplotlib.path as path
 import scipy.stats as stats
 import numpy.random as rand
 
-Nbits=12
+Nbits=16
 Mbits=10
 W=2**Nbits-1
 M=2**Mbits
@@ -16,8 +16,8 @@ mu=255.0
 sigma=60.0
 N=1000000
 seed=20
-test=True
-write=False
+test=False
+write=True
 rng=rand.default_rng(seed)
 u=rng.uniform(low=0,high=1.0,size=N)
 udiscrete=rng.integers(low=0,high=W,size=N,endpoint=True)
@@ -27,6 +27,7 @@ tsam_discrete=np.zeros(N)
 pden=stats.norm.pdf(x=t,loc=mu,scale=sigma)
 pcum=np.cumsum(pden)/np.sum(pden)
 pcum_discrete=np.uint16(np.rint(W*pcum))
+print(pcum_discrete,np.shape(t))
 for k in range(0,N):
   tsample[k]=t[pcum>=u[k]][0]
   tsam_discrete[k]=t[pcum_discrete>=udiscrete[k]][0]
@@ -59,16 +60,16 @@ if write==True:
   f0=open(hexfile,'w')
   f1=open(coefile,'w')
   f2=open(memfile,'w')
-  head_hex0='DEPTH=16384;'
-  head_hex1='WIDTH=10;'
+  head_hex0='DEPTH={0};'.format(int(W+1))
+  head_hex1='WIDTH=8;'
   head_hex2='ADDRESS_RADIX=DEC;'
   head_hex3='DATA_RADIX=DEC;'
-  head_hex4='WIDTH=10;'
+  head_hex4='WIDTH=8;'
   head_hex5='CONTENT'
   head_hex6='BEGIN'
   end_hex='END;'
 
-  head_coe0='memory_initialization_radix=10;'
+  head_coe0='memory_initialization_radix=8;'
   head_coe1='memory_initialization_vector='
   f0.write(head_hex0+'\n')
   f0.write(head_hex1+'\n')
@@ -83,9 +84,15 @@ if write==True:
 
   for k in range(0,W+1):
     rv=np.uint16(np.rint(2.0*t[pcum_discrete>=k][0]))
-    line0='{0:05d} : {1:d};\n'.format(k,rv)
-    line1='{0:d}'.format(rv)
-    line2='@{0:04X} {1:04X}\n'.format(k,rv)
+    line0='{0:05d} : {1:d};\n'.format(2*k,(rv&0x00FF))
+    line1='{0:d}'.format((rv&0x00FF))
+    line2='@{0:04X} {1:04X}\n'.format(2*k,(rv&0x00FF))
+    f0.write(line0)
+    f1.write(line1)
+    f2.write(line2)
+    line0='{0:05d} : {1:d};\n'.format(2*k+1,rv>>8)
+    line1='{0:d}'.format(rv>>8)
+    line2='@{0:04X} {1:04X}\n'.format(2*k+1,rv>>8)
     if k==W:
       endl=';'
     else:
