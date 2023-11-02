@@ -3,19 +3,18 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 entity bin_onehot is
-generic(bin_width: natural:= 10;
-onehot_width: natural:= 8);
-port(gclk: std_logic;
-ctrl_rand: std_logic_vector (2 downto 0);
-binary: in unsigned (bin_width-1 downto 0);
-onehot: out std_logic_vector (onehot_width-1+16 downto 0));
+port(gclk,gen_sel: std_logic;
+ctrl_rand: std_logic_vector (3 downto 0);
+binary: in unsigned (9 downto 0);
+onehot: out std_logic_vector (23 downto 0));
 end entity;
 
 architecture x of bin_onehot is
-signal decoder: std_logic_vector (onehot_width-1+16 downto 0);
-signal bin_msb: unsigned (bin_width-1-3 downto 0);
-signal bin_lsb0: unsigned (bin_width-1-7 downto 0);
-signal bin_lsb1: unsigned (bin_width-1-7 downto 0);
+signal local_rst,local_hab: std_logic;
+signal decoder: std_logic_vector (23 downto 0);
+signal bin_msb: unsigned (6 downto 0);
+signal bin_lsb0: unsigned (2 downto 0);
+signal bin_lsb1: unsigned (2 downto 0);
 
 begin
 
@@ -42,17 +41,25 @@ with bin_lsb0 select
 process(gclk)
 begin
   if rising_edge(gclk) then
-    if ctrl_rand="100" then
-      onehot<=decoder;
-    elsif ctrl_rand="001" or ctrl_rand="110" then
+    if local_rst='1' then
       onehot<=(others=>'0');
+    else
+      if local_hab='1' then
+        onehot<=decoder;
+      end if;
     end if;
   end if;
 end process;
 
-decoder(onehot_width-1+16 downto 16)<=std_logic_vector(('0'&bin_msb)+"00000001");
-bin_msb<=binary(bin_width-1 downto bin_width-7);
-bin_lsb1<=binary(bin_width-1-7 downto 0);
-bin_lsb0<=binary(bin_width-1-7 downto 0);
+decoder(23 downto 16)<=std_logic_vector(('0'&bin_msb)+"00000001");
+bin_msb<=binary(9 downto 3);
+bin_lsb1<=binary(2 downto 0);
+bin_lsb0<=binary(2 downto 0);
+
+local_rst<='1' when (ctrl_rand="0001" or ctrl_rand="1000") else
+                 '0';
+
+local_hab<='1' when (ctrl_rand="0110" and gen_sel='1') else
+                  '0';
 
 end x;
