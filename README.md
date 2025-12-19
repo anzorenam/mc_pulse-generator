@@ -1,2 +1,3 @@
-# mc-processor 
-Under construction, repository for MC-pulse-generator
+# mc_pulse-generator 
+Repository for MC_pulse-generator
+Under construction ...
