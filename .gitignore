@@ -1,0 +1,21 @@
+*.jou
+*.log
+*.str
+
+.vivado/
+vivado/
+*.cache/
+*.runs/
+*.sim/
+*.hw/
+
+# Generated IP products
+*.gen/
+*.ip_user_files/
+
+# Outputs
+*.bit
+*.bin
+*.ltx
+*.hdf
+*.xsa
