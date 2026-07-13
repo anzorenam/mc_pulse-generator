@@ -30,13 +30,15 @@ begin
   end if;
 end process;
 
-process(evt_signal,evt_sync3)
+process(gclk)
 begin
-  if evt_sync3='1' then
-    evt_sync0<='0';
-  else
-    if rising_edge(evt_signal) then
-      evt_sync0<='1';
+  if rising_edge(gclk) then
+    if evt_sync3='1' then
+      evt_sync0<='0';
+    else
+      if evt_signal='1' then
+        evt_sync0<='1';
+      end if;
     end if;
   end if;
 end process;

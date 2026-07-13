@@ -115,7 +115,6 @@ begin
       ctrl_signal<="0101";
       futuro<=copy_data1;
     when copy_data1=>
-      ctrl_signal<="0101";
       futuro<=copy_data2;
     when copy_data2=>
       ctrl_signal<="0110";
