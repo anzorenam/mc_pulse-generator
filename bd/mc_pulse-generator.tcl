@@ -50,7 +50,7 @@ if { $list_projs eq "" } {
 
 # CHANGE DESIGN NAME HERE
 variable design_name
-set design_name pulse_generator
+set design_name mc_pulse_generator
 
 # This script was generated for a remote BD. To create a non-remote design,
 # change the variable <run_remote_bd_flow> to <0>.

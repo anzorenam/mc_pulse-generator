@@ -1,6 +1,6 @@
 
-set project_name "mc_pulse-generator"
-set project_dir  "./mc_pulse-generator"
+set project_name "mc_pulse_generator"
+set project_dir  "./mc_pulse_generator"
 set part         "xczu7ev-ffvc1156-2-e"
 
 create_project ${project_name} ${project_dir} -part ${part} -force
@@ -53,16 +53,15 @@ set obj [get_filesets sources_1]
 set_property ip_repo_paths ./src/ip [current_project]
 update_ip_catalog -rebuild
 
-#get_ipdefs user.org:user:trigger_logic_v1.0
 # Add constraints
 #add_files -fileset constrs_1 ./constraints/top.xdc
 
 # Create Block Design
 source ./bd/${project_name}.tcl
 make_wrapper -files [get_files *.bd] -top
-#add_files -norecurse ${project_dir}/${project_name}.srcs/sources_1/bd/*/hdl/*.v
+add_files -norecurse ${project_dir}/src/${project_name}/hdl/*.v
 
 # Set top
-#set_property -name top -value ${project_name}_zynq_wrapper [current_fileset]
+set_property -name top -value ${project_name}_zynq_wrapper [current_fileset]
 
-#update_compile_order -fileset sources_1
+update_compile_order -fileset sources_1
