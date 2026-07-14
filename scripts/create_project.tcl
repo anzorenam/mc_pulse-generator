@@ -59,9 +59,9 @@ update_ip_catalog -rebuild
 # Create Block Design
 source ./bd/${project_name}.tcl
 make_wrapper -files [get_files *.bd] -top
-add_files -norecurse ${project_dir}/src/${project_name}/hdl/*.v
+add_files -norecurse ./src/${project_name}/hdl/${project_name}_wrapper.v
 
 # Set top
-set_property -name top -value ${project_name}_zynq_wrapper [current_fileset]
+set_property top ${project_name}_wrapper [current_fileset]
 
 update_compile_order -fileset sources_1
